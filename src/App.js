@@ -12,32 +12,61 @@ function App() {
     equipo: "Front End",
     foto: "https://github.com/harlandlohora.png",
     nombre: "Harland Lohora",
-    puesto: "Instructor"
+    puesto: "Instructor",
+    fav: true,
   },
   {
     equipo: "Programación",
     foto: "https://github.com/genesysaluralatam.png",
     nombre: "Genesys Rondón",
-    puesto: "Desarrolladora de software e instructora"
+    puesto: "Desarrolladora de software e instructora",
+    fav: false,
   },
   {
     equipo: "UX y Diseño",
     foto: "https://github.com/JeanmarieAluraLatam.png",
     nombre: "Jeanmarie Quijada",
-    puesto: "Instructora en Alura Latam"
+    puesto: "Instructora en Alura Latam",
+    fav: true,
   },
   {
     equipo: "Programación",
     foto: "https://github.com/christianpva.png",
     nombre: "Christian Velasco",
-    puesto: "Head de Alura e Instructor"
+    puesto: "Head de Alura e Instructor",
+    fav: false,
   },
   {
     equipo: "Innovación y Gestión",
     foto: "https://github.com/JoseDarioGonzalezCha.png",
     nombre: "Jose Gonzalez",
-    puesto: "Dev FullStack"
+    puesto: "Dev FullStack",
+    fav: true,
   }]);
+
+//ELIMINAR COLABORADOR
+  const eliminarColaborador = (colaborador) => {
+    setColaboradores(colaboradores.filter((colab) => {
+      return colab.nombre !== colaborador.nombre;
+    }));
+  };
+
+  //actualizar color de equipo
+  const actualizarColor = (equipo, color) => {
+    
+    setEquipos(equipos.map((equipoActual) => {
+      if (equipoActual.tiulo === equipo) {
+        return {
+          ...equipoActual,
+          colorPrimario: color,
+        };
+      } else {
+        return equipoActual;
+      }
+    }));
+
+  };
+
 
   const manejoClick = () => {
     setOpen(!open);
@@ -47,11 +76,14 @@ function App() {
     setColaboradores([...colaboradores, colaborador]);
   };
 
-  const equipos = [
+  
+
+  const [equipos,setEquipos] = useState ([
     {
       tiulo: "Programación",
       colorPrimario: "#57c278",
       colorSecundario: "#D9F7e9",
+      
     },
     {
       tiulo: "Front End",
@@ -83,13 +115,34 @@ function App() {
       colorPrimario: "#FF8A29",
       colorSecundario: "#FFEEDF",
     },
-  ];
+  ]);
+
+  //crear un nuevo equipo
+  const crearEquipo = (nequipo) => {
+  console.log(nequipo);
+    setEquipos([...equipos, nequipo]);
+  };
+
+  const like = (data) => {
+    setColaboradores(colaboradores.map((colaborador) => {
+      if (colaborador.foto === data) {
+        return {
+          ...colaborador,
+          fav: !colaborador.fav,
+        };
+      }
+      return colaborador;
+    }));
+
+    
+  };
 
   return (
     <div>
       <Header />
       {open && (
-        <Formulario equipos={equipos} registrarcolab={registrarColaborador} />
+        <Formulario equipos={equipos} registrarcolab={registrarColaborador} crearEquipo={crearEquipo}
+        />
       )}
       <MiOrg cambiar={manejoClick} />
       {equipos.map((equipo) => {
@@ -99,10 +152,13 @@ function App() {
             equipo={equipo.tiulo}
             colorPrimario={equipo.colorPrimario}
             colorSecundario={equipo.colorSecundario}
+            actualizarColor={actualizarColor}
+            like={like}
             colaboradores={colaboradores.filter( (colaborador) => {
               return colaborador.equipo === equipo.tiulo;
             })
             }
+            eliminarColaborador={eliminarColaborador}
           />
         );
       })}
